@@ -23,8 +23,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.oblig1.ItemsForSaleListActivity;
 import com.example.oblig1.R;
+import com.example.oblig1.data.VolleySingleton;
 import com.example.oblig1.ui.createUser.CreateUserActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -76,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                //finish();
+                finish();
                 Intent intent = new Intent(LoginActivity.this, ItemsForSaleListActivity.class);
                 startActivity(intent);
             }
@@ -116,9 +121,27 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString(), LoginActivity.this);
+                StringRequest stringRequest = new StringRequest(
+                        Request.Method.GET,
+                        "http://192.168.1.161:8080/api/auth/login?uid=" + usernameEditText.getText().toString() + "&pwd=" + passwordEditText.getText().toString(),
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Intent intent = new Intent(LoginActivity.this, ItemsForSaleListActivity.class);
+                                startActivity(intent);
+                                Toast toast = Toast.makeText(LoginActivity.this, "Welcome " + usernameEditText.getText().toString(), Toast.LENGTH_LONG);
+                                toast.show();
+                                finish();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast toast = Toast.makeText(LoginActivity.this, "Wrong username or password", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                        });
+                VolleySingleton.getInstance(LoginActivity.this).addToRequestQueue(stringRequest);
             }
         });
 

@@ -48,7 +48,7 @@ public class ItemsForSaleListActivity extends AppCompatActivity {
                         System.out.println(response);
                         try {
                             JSONObject jsonObject = response.getJSONObject(i);
-                            ItemForSale itemForSale = new ItemForSale(jsonObject.getString("title"), jsonObject.getString("description"), jsonObject.getString("price"));
+                            ItemForSale itemForSale = new ItemForSale(jsonObject.getString("title"), jsonObject.getString("description"), jsonObject.getString("price"), jsonObject.getJSONArray("photos"));
                             itemForSaleArrayList.add(itemForSale);
                         } catch (JSONException e) {
                             e.printStackTrace();

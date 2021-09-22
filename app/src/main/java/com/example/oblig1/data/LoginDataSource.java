@@ -31,10 +31,10 @@ public class LoginDataSource {
                         @Override
                         public void onResponse(String response) {
                             token = response;
+                            System.out.println(response);
                         }
                     },
                     new Response.ErrorListener() {
-
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             VolleyLog.d("volley", "Error: " + error.getMessage());

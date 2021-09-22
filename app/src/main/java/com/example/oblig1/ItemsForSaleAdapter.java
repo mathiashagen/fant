@@ -1,14 +1,19 @@
 package com.example.oblig1;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.oblig1.data.model.ItemForSale;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
 
 import java.util.List;
 
@@ -17,6 +22,7 @@ public class ItemsForSaleAdapter extends RecyclerView.Adapter<ItemsForSaleAdapte
         public TextView titleTextView;
         public TextView descriptionTextView;
         public TextView priceTextView;
+        public ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -24,6 +30,7 @@ public class ItemsForSaleAdapter extends RecyclerView.Adapter<ItemsForSaleAdapte
             titleTextView = (TextView) itemView.findViewById(R.id.itemForSale_title);
             descriptionTextView = (TextView) itemView.findViewById(R.id.itemForSale_description);
             priceTextView = (TextView) itemView.findViewById(R.id.itemForSale_price);
+            imageView = (ImageView) itemView.findViewById(R.id.itemForSale_imageView);
         }
     }
     private List<ItemForSale> itemForSaleList;
@@ -53,6 +60,12 @@ public class ItemsForSaleAdapter extends RecyclerView.Adapter<ItemsForSaleAdapte
         descriptionTextView.setText(itemForSale.getDescription());
         TextView priceTextView = holder.priceTextView;
         priceTextView.setText(itemForSale.getPrice());
+        ImageView imageView = holder.imageView;
+        try {
+            Picasso.get().load(itemForSale.getFirstPhotoURL()).into(imageView);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

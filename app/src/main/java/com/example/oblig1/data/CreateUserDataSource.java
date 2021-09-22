@@ -36,7 +36,7 @@ public class CreateUserDataSource {
                     public void onErrorResponse(VolleyError error) {
                         VolleyLog.d("volley", "Error: " + error.getMessage());
                         error.printStackTrace();
-                        Toast toast = Toast.makeText(ctx, "Cant create user", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(ctx, error.getCause().toString(), Toast.LENGTH_LONG);
                         toast.show();
                     }
                 }) {
