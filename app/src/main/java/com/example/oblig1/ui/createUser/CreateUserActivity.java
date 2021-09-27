@@ -37,7 +37,7 @@ public class CreateUserActivity extends AppCompatActivity {
         createUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createUserDataSource.createUser(usernameEditText.toString(), passwordEditText.toString(), CreateUserActivity.this);
+                createUserDataSource.createUser(usernameEditText.getText().toString(), passwordEditText.getText().toString(), CreateUserActivity.this);
             }
         });
     }

@@ -1,7 +1,7 @@
-package com.example.oblig1;
+package com.example.oblig1.ui.itemList;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,33 +10,35 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.oblig1.ui.itemDetail.ItemDetailActivity;
+import com.example.oblig1.R;
 import com.example.oblig1.data.model.ItemForSale;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
 
 import java.util.List;
 
 public class ItemsForSaleAdapter extends RecyclerView.Adapter<ItemsForSaleAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView titleTextView;
-        public TextView descriptionTextView;
         public TextView priceTextView;
         public ImageView imageView;
+        public View itemView;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            this.itemView = itemView;
             titleTextView = (TextView) itemView.findViewById(R.id.itemForSale_title);
-            descriptionTextView = (TextView) itemView.findViewById(R.id.itemForSale_description);
             priceTextView = (TextView) itemView.findViewById(R.id.itemForSale_price);
             imageView = (ImageView) itemView.findViewById(R.id.itemForSale_imageView);
         }
     }
     private List<ItemForSale> itemForSaleList;
+    private Context ctx;
 
-    public ItemsForSaleAdapter(List<ItemForSale> itemForSaleList) {
+    public ItemsForSaleAdapter(List<ItemForSale> itemForSaleList, Context ctx) {
         this.itemForSaleList = itemForSaleList;
+        this.ctx = ctx;
     }
 
     @Override
@@ -56,16 +58,20 @@ public class ItemsForSaleAdapter extends RecyclerView.Adapter<ItemsForSaleAdapte
 
         TextView titleTextView = holder.titleTextView;
         titleTextView.setText(itemForSale.getTitle());
-        TextView descriptionTextView = holder.descriptionTextView;
-        descriptionTextView.setText(itemForSale.getDescription());
         TextView priceTextView = holder.priceTextView;
         priceTextView.setText(itemForSale.getPrice());
         ImageView imageView = holder.imageView;
-        try {
-            Picasso.get().load(itemForSale.getFirstPhotoURL()).into(imageView);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        Picasso.get().load(itemForSale.getFirstPhotoURL()).into(imageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ctx, ItemDetailActivity.class);
+                intent.putExtra("itemForSale", itemForSale);
+                ctx.startActivity(intent);
+            }
+        });
     }
 
     @Override

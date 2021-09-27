@@ -14,22 +14,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.example.oblig1.ItemsForSaleListActivity;
+import com.example.oblig1.ui.itemList.ItemsForSaleListActivity;
 import com.example.oblig1.R;
+import com.example.oblig1.data.LoginRepository;
 import com.example.oblig1.data.VolleySingleton;
+import com.example.oblig1.data.model.LoggedInUser;
 import com.example.oblig1.ui.createUser.CreateUserActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -43,10 +42,12 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
+
         final EditText usernameEditText = findViewById(R.id.lastname);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.createNewUser);
         final Button createUserButton = findViewById(R.id.createUser);
+        final Button browseButton = findViewById(R.id.browse);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
@@ -80,10 +81,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 setResult(Activity.RESULT_OK);
 
+                finishAffinity();
                 //Complete and destroy login activity once successful
-                finish();
                 Intent intent = new Intent(LoginActivity.this, ItemsForSaleListActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -106,17 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         };
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString(), LoginActivity.this);
-                }
-                return false;
-            }
-        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +119,9 @@ public class LoginActivity extends AppCompatActivity {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                LoggedInUser loggedInUser = new LoggedInUser(usernameEditText.getText().toString(), response.toString());
+                                LoginRepository loginRepository = LoginRepository.getInstance();
+                                loginRepository.setLoggedInUser(loggedInUser);
                                 Intent intent = new Intent(LoginActivity.this, ItemsForSaleListActivity.class);
                                 startActivity(intent);
                                 Toast toast = Toast.makeText(LoginActivity.this, "Welcome " + usernameEditText.getText().toString(), Toast.LENGTH_LONG);
@@ -149,6 +144,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, CreateUserActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        browseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, ItemsForSaleListActivity.class);
                 startActivity(intent);
             }
         });
